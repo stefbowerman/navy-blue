@@ -1,0 +1,37 @@
+.btn {
+  display: inline-block;
+  margin-top: 12px;
+  background: none;
+  text-transform: uppercase;
+  background-color: $white;
+  border: 1px solid $black;
+  border-radius: 0px;
+  padding: 12px 17px;
+  font-size: 12px;
+  width: auto;
+  cursor: pointer;
+
+  @include has-hover {
+    &:hover,
+    &:focus {
+      background-color: darken($white, 10%);
+    }
+  }
+
+  &.disabled,
+  &:disabled {
+    cursor: not-allowed;
+    border: 1px solid #ccc;
+
+    @include has-hover {
+      &:hover,
+      &:focus {
+        // background-color: darken($white, 10%);
+      }
+    }    
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}

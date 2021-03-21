@@ -1,0 +1,13 @@
+{% paginate collections by 50 %}
+  <h1>Collections</h1>
+  <ul class="grid clearfix">
+  {% for collection in collections %}
+    {% include 'collection-grid-item' with 'three-per-row' %}
+  {% endfor %}
+  </ul>
+  {% if paginate.pages > 1 %}
+  <div id="pagination">
+    {{ paginate | default_pagination }}
+  </div>
+  {% endif %}
+{% endpaginate %}
