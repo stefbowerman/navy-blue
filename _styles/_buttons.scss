@@ -1,27 +1,35 @@
 .btn {
   display: inline-block;
-  margin-top: 12px;
   background: none;
   text-transform: uppercase;
-  background-color: $white;
-  border: 1px solid $black;
-  border-radius: 0px;
-  padding: 12px 17px;
-  font-size: 12px;
+  background-color: $color-text;
+  border: 1px solid $color-text;
+  color: $body-bg;
+  border-radius: 0;
+  padding: 11px 25px 10px;
+  font-size: $font-size-base;
   width: auto;
   cursor: pointer;
+  transition: all 150ms ease-out;
 
-  @include has-hover {
-    &:hover,
-    &:focus {
-      background-color: darken($white, 10%);
-    }
+  @include bp-up(md) {
+    padding: 8px 15px 7px;
+    font-size: $font-size-sm;
   }
+
+  // @include has-hover {
+  //   &:hover,
+  //   &:focus {
+  //     background-color: darken($white, 10%);
+  //   }
+  // }
 
   &.disabled,
   &:disabled {
     cursor: not-allowed;
-    border: 1px solid #ccc;
+    background-color: transparent;
+    border-color: transparentize($color-text, 0.75);
+    color: transparentize($color-text, 0.25);
 
     @include has-hover {
       &:hover,
@@ -34,4 +42,45 @@
   &:focus {
     outline: 0;
   }
+}
+
+.btn--alt {
+  padding: 5px 9px 4px;
+  background-color: transparent;
+  color: $color-text;
+
+  @include bp-up(md) {
+    padding: 3px 5px 2px;
+  }
+
+  @include has-hover {
+    &:hover,
+    &:focus {
+      background-color: $color-text;
+      color: $body-bg;
+    }
+  }  
+}
+
+.btn--secondary {
+  padding: 5px 9px 4px;
+  background-color: $color-text;
+  border-color: $color-text;
+  color: $body-bg;
+
+  @include bp-up(md) {
+    padding: 3px 5px 2px;
+  }
+
+  @include has-hover {
+    &:hover,
+    &:focus {
+      background-color: $color-text;
+    }
+  }    
+}
+
+.btn--block {
+  display: block;
+  width: 100%;
 }

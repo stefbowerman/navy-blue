@@ -5,5 +5,54 @@
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding-top: $outer-vertical-margin;
+
+  a {
+    position: relative;
+    left: -3px;
+    display: inline-block;
+    padding-left: 3px;
+    padding-right: 3px;
+    text-transform: uppercase;   
+  }
+
+  .header-cart {
+    left: auto;
+    right: -3px;
+  } 
+
+  a:not(.logo-link) {
+    @include has-hover {
+      &:hover {
+        background-color: $color-text;
+        color: $body-bg;
+      }
+    }
+  }
+}
+
+.header-nav {
+  a {
+    display: block;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+}
+
+.header-logo {
+  width: 100px;
+  position: fixed;
+  right: $outer-gutter-mobile;
+  bottom: $outer-vertical-margin;
+
+  @include bp-up(lg) {
+    right: $outer-gutter;
+  }
+
+  @include bp-up(xl) {
+    width: 125px;
+  }
 }

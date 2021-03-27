@@ -36,6 +36,7 @@
     "postcss": "^8.2.6",
     "require-dir": "^1.2.0",
     "run-sequence": "^2.2.1",
+    "swiper": "^6.5.0",
     "uglifyify": "^5.0.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -43,8 +44,11 @@
     "yargs": "^16.2.0"
   },
   "dependencies": {
+    "gulp-watch": "^5.0.1",
+    "imagesloaded": "^4.1.4",
     "jquery": "^3.6.0",
     "navigo": "^8.9.0",
-    "throttle-debounce": "^3.0.1"
+    "throttle-debounce": "^3.0.1",
+    "youtube-player": "^5.5.2"
   }
 }

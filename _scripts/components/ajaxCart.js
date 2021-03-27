@@ -14,7 +14,8 @@ const selectors = {
 const classes = {
   open: 'is-open',
   empty: 'is-empty',
-  bodyCartOpen: 'ajax-cart-open'
+  bodyCartOpen: 'ajax-cart-open',
+  itemRemove: 'is-being-removed'
 }
 
 const namespace = '.ajaxCart'
@@ -53,12 +54,17 @@ export default class AJAXCart {
               <img src="${image}" />
             </div>
             <div class="ajax-cart__item-info">
-              <h4>${product_title}</h4>
-              <div>${price}</div>
+              <div class="ajax-cart__item-info-main">
+                <h6>${product_title}</h6>
+                <span class="ajax-cart-price">${price}</span>
+              </div>
               <div>${variant_title}</div>
-              ${ quantity > 1 ? `<div>QTY ${quantity}</div>` : '' }
-              <a href="#" class="btn" data-item-remove>Remove</a>
-            </div>            
+              ${ quantity > 1 ? `<div>QTY: ${quantity}</div>` : '' }
+              <a href="#" class="ajax-cart__item-info-remove" data-item-remove>Remove</a>
+            </div>
+            <div class="ajax-cart__hover-remove">
+              <a href="#" class="btn btn--alt" data-item-remove>Remove</a>
+            </div>
           </div>
         `
       }).join('')
@@ -171,7 +177,13 @@ export default class AJAXCart {
       .then((cart) => {
         if (cart.item_count > 0) {
           // We only need to re-render the price
-          $el.remove();
+          $el.slideUp({
+            duration: 250,
+            easing: 'easeOutCubic',
+            start: () => $el.addClass(classes.itemRemove),
+            complete: () => $el.remove(),
+          })
+
           this.render(cart, 'price');
         }
         else {

@@ -1,4 +1,32 @@
-{% assign ll = linklists[section.settings.main_menu] %}
+{% assign nav_1_html = '' %}
+{% assign nav_2_html = '' %}
+
+{% for i in (1..2) %}
+  {% assign menu_handle_setting = 'menu_' | append: i %}
+  {% assign menu = linklists[section.settings[menu_handle_setting]] %}
+
+  {% capture html %}
+    {% if menu.links.size > 0 %}
+      <nav class="header-nav">
+        <ul>
+          {% for link in menu.links %}
+            <li>
+              <a href="{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>
+                {{ link.title }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  {% endcapture %}
+
+  {% if i == 1 %}
+    {% assign nav_1_html = html %}
+  {% elsif i == 2 %}
+    {% assign nav_2_html = html %}
+  {% endif %}
+{% endfor %}
 
 <header
   class="header"
@@ -6,36 +34,50 @@
   data-section-id="{{ section.id }}"
   data-section-type="header"
 >
-  <nav class="header-nav">
-    {% if ll.links.size > 0 %}
-      <ul>
-        {% for link in ll.links %}
-          <li>
-            <a href="{{ link.url }}">
-              {{ link.title | prepend: '/' }}
-            </a>
-          </li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  </nav>  
+  <div class="container">
+    <div class="row">
+      <div class="col-11 col-sm-8 col-md-10 col-lg-12 col-xxl-11">
+        <a href="/" itemprop="url" title="{{ shop.name }}" class="logo-link">
+          {% render 'header-logo' %}
+        </a>
+      </div>
 
-  <a href="/" itemprop="url" title="{{ shop.name }}">
-    {% render 'header-logo' %}
-  </a>
+      <div class="col-8 col-sm-6 col-md-4">
+        {{ nav_1_html }}
+      </div>
 
-  <a
-    href="/cart"
-    class="header-cart {% if cart.item_count > 0 %} has-items{% endif %}"
-    data-ajax-cart-toggle
-  >
-      Cart <span data-cart-count>{{ cart.item_count }}</span>
-  </a>
+      <div class="col-sm-6 col-md-4 offset-md-3 offset-lg-2 offset-xxl-3 d-none d-sm-block">
+        {{ nav_2_html }}
+      </div>      
+
+      <div class="col-5 col-sm-4 col-md-3 col-lg-2" style="text-align: right;">
+        <a
+          href="/cart"
+          class="header-cart"
+          data-ajax-cart-toggle
+        >
+            Cart <span data-cart-count>{{ cart.item_count }}</span>
+        </a>        
+      </div>
+    </div>
+  </div>
 </header>
 
 {% schema %}
   {
     "name": "Header",
-    "settings": []
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu_1",
+        "label": "Menu 1"
+      },
+      {
+        "type": "link_list",
+        "id": "menu_2",
+        "label": "Menu 2",
+        "info": "This menu is hidden on mobile"
+      }
+    ]
   }
 {% endschema %}

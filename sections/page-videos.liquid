@@ -1,0 +1,74 @@
+<div data-section-id="{{ section.id }}" data-section-type="page-videos">
+  <div class="layout-content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">      
+          {% for block in section.blocks %}
+            <div class="video-card" {{ block.shopify_attributes }}>
+              {% if block.settings.video_url != blank %}
+                <div class="embed" data-embed data-id="{{ block.settings.video_url.id }}">
+                  <div class="embed__player" data-embed-player></div>
+
+                  <div class="embed__cover" data-embed-cover>
+                    <span class="btn btn--secondary">Watch Video</span>
+                    {% if block.settings.image != blank %}
+                      <img 
+                        src="{{ block.settings.image | img_url: '200x' }}"
+                        srcset="
+                          {{ block.settings.image | img_url: '400x' }}  400w,
+                          {{ block.settings.image | img_url: '600x' }}  600w,
+                          {{ block.settings.image | img_url: '800x' }}  800w,
+                          {{ block.settings.image | img_url: '1200x' }} 1200w,
+                          {{ block.settings.image | img_url: '1600x' }} 1600w,
+                          {{ block.settings.image | img_url: '1800x' }} 1800w,
+                        "
+                      />
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+              <h4>{{ block.settings.title }}</h4>
+              <div class="rte">{{ block.settings.description }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Videos Page",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "video",
+        "name": "Video",
+        "settings": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Title"
+          },
+          {
+            "id": "description",
+            "type": "richtext",
+            "label": "Description"
+          },          
+          {
+            "id": "video_url",
+            "type": "video_url",
+            "label": "Video URL",
+            "accept": ["youtube"]
+          },
+          {
+            "id": "image",
+            "type": "image_picker",
+            "label": "Image"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

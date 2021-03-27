@@ -7,17 +7,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="canonical" href="{{ canonical_url }}" />
 
-    <!-- @TODO - Update add these favicon theme settings -->
-    {% if settings.touch_icon != blank %}
-      <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.touch_icon | img_url: '180x180' }}">
-    {% elsif settings.favicon != blank %}
-      <link rel="apple-touch-icon" sizes="180x180" href="{{ settings.favicon | img_url: '180x180' }}">
-    {% endif %}
-
-    {% if settings.favicon != blank %}
-      <link rel="icon" type="image/png" sizes="32x32" href="{{ settings.favicon | img_url: '32x32' }}">
-      <link rel="icon" type="image/png" sizes="16x16" href="{{ settings.favicon | img_url: '16x16' }}">
-    {% endif %}
+    {% render 'favicon' %}
 
     {% capture seo_title %}
       {{ page_title }}
@@ -83,7 +73,7 @@
   <body id="{{ page_title | handle }}" class="{{ body_class | strip | strip_newlines }}">
     <script type="text/javascript">document.body.className += ' is-loading';</script>
     <a class="in-page-link visually-hidden skip-link" href="#view-container">
-      {{ 'general.accessibility.skip_to_content' | t }}
+      Skip To Content
     </a>
 
     <div class="layout-wrapper">
@@ -99,7 +89,8 @@
         {% section 'footer' %}
       </div>
     </div>
-
+    
+    {% section 'site-background' %}
     {% section 'ajax-cart' %}
   </body>
 </html>

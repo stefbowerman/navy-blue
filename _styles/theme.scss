@@ -1,15 +1,21 @@
+@import 'vendor/swiper';
+
 @import 'variables';
 @import 'mixins';
 @import 'mixins';
+@import 'fonts';
 @import 'reset';
 @import 'normalize';
 @import 'core';
-@import 'fonts';
+@import 'type';
 @import 'forms';
 @import 'buttons';
+@import 'grid';
+@import 'layout';
 @import 'transitions';
 @import 'helpers';
 @import 'components';
+@import 'utilities';
 
 
 html.js {
@@ -23,4 +29,12 @@ html.js {
       opacity: 1;
     }
   }
+}
+
+html {
+  padding-bottom: 0 !important;
+}
+
+#preview-bar-iframe {
+  display: none;
 }

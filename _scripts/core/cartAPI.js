@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { formatMoney } from './currency';
+import { formatMoney, stripZeroCents } from './currency';
 import { getSizedImageUrl } from './image';
 
 /**
@@ -14,11 +14,11 @@ export const formatCart = (cart) => {
   }
 
   // Make adjustments to the cart object contents before we pass it off to the handlebars template
-  cart.total_price = formatMoney(cart.total_price, theme.moneyFormat);
+  cart.total_price = stripZeroCents(formatMoney(cart.total_price));
 
   cart.items.map((item) => {
     item.image = getSizedImageUrl(item.image, '500x');
-    item.price = formatMoney(item.price);
+    item.price = stripZeroCents(formatMoney(item.price));
     item.multiple_quantities = item.quantity > 1;
 
     // Adjust the item's variant options to add "name" and "value" properties

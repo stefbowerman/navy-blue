@@ -1,2 +1,35 @@
-<a href="/collections/all">Collections</a>
-{{ content_for_index }}
+<div class="layout-content-wrapper">
+    <div class="container" style="display: none;">
+    <h1>H1 Heading</h1>  
+    <h2>H1 Heading</h2>  
+    <h3>H1 Heading</h3>  
+    <h4>H1 Heading</h4>  
+    <h5>H1 Heading</h5>
+    <h6>H1 Heading</h6>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+    consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+    proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  </div>
+
+  <style>
+    .bl {
+      background-color: red;
+      width: 100%;
+      height: 40px;
+    }
+  </style>
+
+  <div class="container" style="display: none;">
+    <div class="row">
+      <div class="col-md-6"><div class="bl"></div></div>
+      <div class="col-md-8"><div class="bl"></div></div>
+      <div class="col-md-3"><div class="bl"></div></div>
+      <div class="col-md-7"><div class="bl"></div></div>
+    </div>
+  </div>
+
+  {{ content_for_index }}
+</div>

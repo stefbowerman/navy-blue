@@ -1,0 +1,15 @@
+.footer {
+  padding-bottom: $outer-vertical-margin + 8px;
+
+  @include bp-up(sm) {
+    display: none;
+  }
+
+  ul {
+    text-transform: uppercase;
+
+    li {
+      margin-top: 4px;
+    }
+  }
+}

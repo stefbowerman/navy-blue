@@ -11,49 +11,226 @@
 
 {% endcomment -%}
 
-{% assign product_image_dimension = '600x' %}
-
 {% assign sold_out = false %}
 {% if product.available == false %}
   {% assign sold_out = true %}
 {% endif %}
 
 {% if product %}
+  {% assign current_variant = product.selected_or_first_available_variant %}
+
+  {% comment %}
+    If the product has variants for something other than color, force selection
+    We don't care about color because it's very obvious what color is being selected
+    if a product comes in color and size, we want the selection required text to just say "Select Size"
+  {% endcomment %}
+  {% assign selection_required = false %}
+  {% assign non_color_variant_options_count = 0 %}
+  {% assign single_non_color_variant_option_name = '' %}
+  {% for option in product.options_with_values %}
+    {% assign option_name_upcase = option.name | upcase %}
+    {% if option_name_upcase != "COLOR" and option.values.size > 1 %}
+      {% assign selection_required = true %}
+      {% assign single_non_color_variant_option_name = option.name %}
+      {% assign non_color_variant_options_count = non_color_variant_options_count | plus: 1 %}
+    {% endif %}
+  {% endfor %}
+
+  {% assign selection_required_text = 'products.product.select_options' | t %}
+  {% if non_color_variant_options_count == 1 %}
+    {% assign selection_required_text = 'Select ' | append: single_non_color_variant_option_name %}
+  {% endif %}  
+
   <div class="product-card{% if sold_out %} product-card--sold-out{% endif %}" data-product-card>
     <div class="product-card__contents">
-      {% if product.featured_image %}
-        <a href="{{ product.url }}">
-          <div class="product-card__gallery">
-            <div class="product-card__gallery-image" data-product-card-gallery>
+      <div class="product-card__info">
+        <h3 class="product-card__info-title">{{ product.title }}</h3>
+        <div class="product-card__info-description">
+          {{ product.description }}
+        </div>
+      </div>
+
+      {% if product.images.size > 0 %}
+        <div class="product-card__gallery" data-gallery>
+          {% for image in product.images %}
+            {% comment %} @TODO - do padding-bottom here to prevent layout shift {% endcomment %}
+            <div class="product-card__gallery-image" data-gallery-image>
               <img
-                src="{{ product.featured_image.src | img_url: product_image_dimension }}"
-                alt="{{ product.featured_image.alt | escape }}"
+                src="{{ image | img_url: '400x' }}"
+                alt="{{ image.alt | escape }}"
+                height="{{ image.height }}"
+                width="{{ image.width }}"
               >
             </div>
-          </div>
-        </a>
+          {% endfor %}
+        </div>
       {% endif %}
 
-      <div class="product-card__info">
-        <p class="product-card__info-title">{{ product.title }}</p>
-        <p class="product-card__info-price">
-          {% if product.available %}
-            {% if product.compare_at_price > product.price %}
-              <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
-              <s>{{ product.compare_at_price | money_without_trailing_zeros }}</s>
-            {% endif %}
+      <div class="product-card__form" data-product-detail-form>
+        {% render 'product-detail-price',
+                   product: product,
+                   current_variant: current_variant
+        %}
 
-            {% if product.price_varies %}
-              {%- assign price = product.price | money -%}
-              {{ 'products.product.from_text_html' | t: price: price }}
+        <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+          <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+          <meta itemprop="price" content="{{ current_variant.price | divided_by: 100.00 }}">
+          <link itemprop="availability" href="http://schema.org/{% if current_variant.available %}InStock{% else %}OutOfStock{% endif %}">
+
+          <form action="/cart/add" method="post" enctype="multipart/form-data" data-add-to-cart-form>     
+            {% if product.available %}
+              {% unless product.has_only_default_variant %}
+                {% for option in product.options_with_values %}
+                  
+                  {% assign option_name_upcase = option.name | upcase %}
+
+                  {% comment %} Kind of dumb to create a var for this but it has a more semantic name {% endcomment %}
+                  {% assign option_has_single_value = false %}
+                  {% if option.values.size == 1 %}
+                    {% assign option_has_single_value = true %}
+                  {% endif %}
+
+                  {% assign can_show_sold_out_ui_for_option = false %}
+                  {% if product.options.size == 1 %}
+                    {% assign can_show_sold_out_ui_for_option = true %}
+                  {% elsif product.options.size == 2 and option.position == 2 and product.options_with_values[0].values.size == 1 %}
+                    {% assign can_show_sold_out_ui_for_option = true %}
+                  {% endif %}                  
+
+                  {% comment %} Don't show the selector if there's only one value {% endcomment %}
+                  <div class="selector-wrapper form-group js" {% if option_has_single_value %}style="display: none"{% endif %}>
+                    <label for="SingleOptionSelector-{{ product.id }}-{{ forloop.index0 }}">
+                      {{ option.name }}
+                    </label>
+
+                    <select
+                      id="SingleOptionSelector-{{ product.id }}-{{ forloop.index0 }}"
+                      class="form-control"
+                      data-single-option-selector
+                      data-index="option{{ option.position }}"
+                      style="display: none">
+                      {% for value in option.values %}
+                        <option
+                          value="{{ value | escape }}"
+                          {% if option.selected_value == value %}selected="selected"{% endif %}>
+                            {{ value }}
+                        </option>
+                      {% endfor %}
+                    </select>
+
+                    <div
+                      class="option-value-list"
+                      data-option-position="{{ option.position }}"
+                      data-variant-option-value-list
+                    >
+                      {% for value in option.values %}
+                        {% comment %} If the product only has one option (like size) then we can show values as sold out by checking the variant for that option {% endcomment %}
+                        {% assign is_disabled = false %}
+
+                        {% if can_show_sold_out_ui_for_option %}
+                          {% for v in product.variants %}
+                            {% assign variant_option_prop = 'option' | append: option.position %}
+                            {% if v[variant_option_prop] == value and v.available == false %}
+                              {% assign is_disabled = true %}
+                            {% endif %}
+                          {% endfor %}
+                        {% endif %}
+
+                        {% assign is_selected = false %}
+                        {% if is_color and forloop.index0 == 0 %}
+                          {% assign is_selected = true %}
+                        {% endif %}
+
+                        <a
+                          href="#"
+                          class="option-value{% if is_disabled %} is-disabled {% elsif is_selected %} is-selected{% endif %}" data-variant-option-value="{{ value }}"
+                          {% if is_disabled %} disabled="disabled" aria-disabled="true"{% endif %}
+                        >
+                          {{ value }}
+                        </a>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endfor %}
+              {% endunless %}
+
+              <label class="visually-hidden" for="variant-select-{{ product.id }}">Select Variant</label>
+              <select name="id" class="no-js" id="variant-select-{{ product.id }}" data-product-select>
+                {% for variant in product.variants %}
+                  <option
+                    {% if variant == current_variant %}selected="selected"{% endif %}
+                    {% unless variant.available %}disabled="disabled"{% endunless %}
+                    value="{{ variant.id }}">
+                      {{ variant.title }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              <input type="hidden" value="1" name="quantity" />
+
+              <button
+                type="submit"
+                name="add"
+                class="btn"
+                data-add-to-cart-btn
+                {% if selection_required or product.available == false %}disabled="disabled"{% endif %}>
+                <span data-add-to-cart-text>
+                  {% if selection_required %}
+                    {{ selection_required_text }}
+                  {% else %}
+                    Add To Cart
+                  {% endif %}
+                </span>
+              </button>
             {% else %}
-              {{ product.price | money_without_trailing_zeros }}
+              <div class="product-card__info-price">Sold Out</div>
             {% endif %}
-          {% else %}
-            Sold Out
-          {% endif %}
-        </p>
-      </div>      
+          </form>
+        </div>
+
+        {% unless product == empty %}
+          <script type="application/json" data-product-json>
+            {% render 'product-json', product: product %}
+          </script>
+        {% endunless %}        
+      </div>    
+    </div>
+
+    <div class="product-zoom" data-product-zoom>
+      <div class="product-zoom__overlay" data-zoom-overlay>
+        <a
+          href="#"
+          class="product-zoom__overlay-close"
+          data-zoom-close>
+          Close Zoom
+        </a>
+
+        <div class="product-zoom__overlay-content" data-zoom-overlay-content>
+          <div class="swiper-container" data-slideshow>
+            <div class="swiper-wrapper">
+              {% for image in product.images %}
+                <div class="swiper-slide outer-container">
+                  <img
+                    data-src="{{ image | img_url: '400x' }}"
+                    data-srcset="
+                      {{ image | img_url: '400x' }}  400w,
+                      {{ image | img_url: '600x' }}  600w,
+                      {{ image | img_url: '800x' }}  800w,
+                      {{ image | img_url: '1200x' }} 1200w,
+                      {{ image | img_url: '1600x' }} 1600w,
+                      {{ image | img_url: '1800x' }} 1800w,
+                    "
+                    height="{{ image.height }}"
+                    width="{{ image.width }}"
+                    alt="{{ image.alt | escape }}"
+                  />
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="product-zoom__background" data-zoom-background></div>
     </div>
   </div>
 {% endif %}

@@ -1,1 +1,4 @@
-// @include font-face('Archive Pro Mono', ArchiveProMono, $font-weight-normal);
+@include font-face('Nitti', Nitti-Normal, $font-weight-normal);
+@include font-face('Nitti', Nitti-Bold, $font-weight-bold);
+@include font-face('Gotham', GothamHTF-Book, $font-weight-normal);
+@include font-face('Gotham', GothamHTF-Medium, $font-weight-bold);

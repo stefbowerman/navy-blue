@@ -2,14 +2,53 @@
 
 $black: #000;
 $white: #FFF;
+$off-white: #e6edf5;
+$navy:  #010714;
+$bright-navy: #1f4698; // #062b79;
+// $blue: #3d7dfa;
 
-$body-bg:    $white;
-$color-text: $black;
+// Spacing
+//
+// Control the default styling of most Bootstrap elements by modifying these
+// variables. Mostly focused on spacing.
+// You can add more entries to the $spacers map, should you need more variation.
+
+$spacer: 0.8rem !default;
+
+
+// Body
+$body-bg:    $navy;
+$color-text: $off-white;
+
+/* Grid Stuff */
+$breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1200px,
+  xxl: 1480px,
+  xxxl: 1800px
+);
+
+$enable-grid-classes: true;
+$grid-breakpoints: $breakpoints;
+$grid-columns: 24 !default;
+$gutter: 10px;
+$grid-gutter-width: $gutter;
+$outer-gutter-mobile: 24px;
+$outer-gutter: 36px;
+$outer-vertical-margin: 18px;
+
+// Layout
+$layout-vertical-padding-mobile: 150px;
+$layout-vertical-padding: 150px; // @TODO - Maybe combine these at some point?
 
 
 /* Typography */
 
-$font-family-base: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+$font-family-base: 'Nitti', Consolas, 'Courier New', Courier, monospace;
+$font-family-alt:  'Gotham', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
 $font-weight-thin:        100;
 $font-weight-extra-light: 200;
@@ -21,31 +60,57 @@ $font-weight-bold:        700;
 $font-weight-extra-bold:  800;
 $font-weight-black:       900;
 
-$font-size-base:    1rem;
-$font-size-small:   $font-size-base * 0.85;
-$font-size-smaller: $font-size-base * 0.8;
-$font-size-tiny:    $font-size-base * 0.75;
+$font-size-base:    (13/16) * 1rem;
+$font-size-lg:      $font-size-base * 1.6;
+$font-size-md:      $font-size-base * 1.35;
+$font-size-sm:      $font-size-base * 0.92;
+$font-size-xs:      $font-size-base * 0.825;
 
-$line-height-base:    1.3;
-$line-height-small:   1.4;
-$line-height-smaller: 1.4;
-$line-height-tiny:    1.5;
+$line-height-base:  1.35;
+$line-height-sm:    1.5;
+$line-height-xs:    1.6;
 
-$breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 1024px,
-  xl: 1200px,
-  xxl: 1480px,
-  xxxl: 1800px
-);
+$letter-spacing-base: 0.05em;
 
-$gutter: 32px;
-$content-max-width: 1400px;
+// Headings
+$headings-margin-bottom:      $spacer !default;
+$headings-font-family:        $font-family-alt!default;
+$headings-font-weight:        $font-weight-bold !default;
+$headings-line-height:        1.2 !default;
 
-// Component Sizing
-$zindex-ajax-cart: 50;
+$h1-font-size:                $font-size-lg;
+$h2-font-size:                $font-size-md;
+$h3-font-size:                $font-size-md;
+$h4-font-size:                $font-size-base * 1.2;
+$h5-font-size:                $font-size-base;
+$h6-font-size:                $font-size-sm;
+
+$h1-letter-spacing:           0em !default;
+$h2-letter-spacing:           0em !default;
+$h3-letter-spacing:           0em !default;
+$h4-letter-spacing:           0 !default;
+$h5-letter-spacing:           0 !default;
+$h6-letter-spacing:           0 !default;
+
+$h1-line-height:              1.2 !default;
+$h2-line-height:              1.2 !default;
+$h3-line-height:              1.2 !default;
+$h4-line-height:              1.2 !default;
+$h5-line-height:              1.2 !default;
+$h6-line-height:              1.2 !default;
+
+
+// Z Index
+$zindex-site-background: -10;
 $zindex-header: 100;
+$zindex-ajax-cart: 150;
+$zindex-product-zoom: 200;
 $zindex-skip-to-content: 10000;
 
+// Sizing
+$card-spacing: 11px;
+
+
+// Utilities
+
+$displays: none, inline, inline-block, block, flex, inline-flex !default;

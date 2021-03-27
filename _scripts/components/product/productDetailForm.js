@@ -43,11 +43,13 @@ export default class ProductDetailForm {
     this.$singleOptionSelectors = $(selectors.singleOptionSelector, this.$el)
     this.$variantOptionValueList = $(selectors.variantOptionValueList, this.$el) // Alternate UI that takes the place of a single option selector (could be swatches, dots, buttons, whatever..)    
     this.$productDetailPrice = $(selectors.productDetailPrice, this.$el)
-    this.$addToCartBtn = $(selectors.addToCartBtn, this.$container)
-    this.$addToCartBtnText = $(selectors.addToCartText, this.$container) // Text inside the add to cart button
-    this.defaultButtonText = this.$addToCartBtnText.text()
+    this.$addToCartBtn = $(selectors.addToCartBtn, this.$el)
+    this.$addToCartBtnText = $(selectors.addToCartText, this.$el) // Text inside the add to cart button
+    this.defaultButtonText = 'Add to Cart' // this.$addToCartBtnText.text()
 
     this.product = JSON.parse($(selectors.productJSON, this.$el).html())
+    
+    this.price = new ProductDetailPrice(this.$productDetailPrice)
     this.variants = new Variants({
       $container: this.$el,
       enableHistoryState: this.settings.enableHistoryState,
@@ -55,7 +57,6 @@ export default class ProductDetailForm {
       originalSelectorId: selectors.originalSelectorId,
       product: this.product
     })
-    this.price = new ProductDetailPrice(this.$productDetailPrice)
 
     this.$el.on('variantChange', this.onVariantChange.bind(this))
     this.$el.on('click', selectors.variantOptionValue, this.onVariantOptionValueClick.bind(this))

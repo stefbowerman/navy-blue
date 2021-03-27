@@ -9,6 +9,7 @@ import {
 } from './core/utils'
 import { pageLinkFocus } from './core/a11y'
 import AppController     from './core/appController'
+import * as Animations   from './core/animations'
 
 // Views
 import ProductView from './views/product'
@@ -20,6 +21,7 @@ import IndexView from './views/index'
 import SectionManager from './core/sectionManager'
 import Header from './sections/header'
 import AJAXCart from './sections/ajaxCart'
+import SiteBackground from './sections/siteBackground'
 
 const setViewportHeightProperty = () => {
   // If mobile / tablet, set var to window height. This fixes the 100vh iOS bug/feature.
@@ -30,10 +32,16 @@ const setViewportHeightProperty = () => {
 (() => {
   const $body = $(document.body);
 
+  Animations.initialize();
+
   const sectionManager = new SectionManager()
 
   sectionManager.register('header', Header)
   sectionManager.register('ajax-cart', AJAXCart)
+  sectionManager.register('site-background', SiteBackground)
+
+  const header = sectionManager.getSingleInstance('header')
+  const ajaxCart = sectionManager.getSingleInstance('ajax-cart')
 
   const appController = new AppController({
     viewConstructors: {
@@ -46,36 +54,37 @@ const setViewportHeightProperty = () => {
       
     },
     onInitialViewReady: (view) => {
-      console.log('onInitialViewReady')
+      // console.log('onInitialViewReady')
     },
     onBeforeRouteStart: (deferred) => {
-      console.log('onBeforeRouteStart')
+      // console.log('onBeforeRouteStart')
       // sections.ajaxCart.close();
       deferred.resolve();
     },
     onRouteStart: (url) => {
-      console.log('onRouteStart');
+      // console.log('onRouteStart');
     },
     onViewChangeStart: (url, newView) => {
-      console.log('onViewChangeStart')
+      // console.log('onViewChangeStart')
+      header.updateNavLinks(url)
     },
     onViewTransitionOutDone: (url, deferred) => {
-      console.log('onViewTransitionOutDone')
+      // console.log('onViewTransitionOutDone')
       window.scrollTo && window.scrollTo(0, 0)
       deferred.resolve()
     },
     onViewChangeComplete: (newView) => {
-      console.log('onViewChangeComplete')
+      // console.log('onViewChangeComplete')
     },
     onViewReady: (view) => {
-      console.log('onViewReady')
+      // console.log('onViewReady')
       // console.log(view);
 
       if (view.type === 'index') {
         //
       }
       else if (view.type === 'cart') {
-        // sections.ajaxCart.open();
+        ajaxCart.open();
       }
     }    
   })

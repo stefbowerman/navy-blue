@@ -1,12 +1,36 @@
-<footer data-section-id="{{ section.id }}" data-section-type="footer">
-  <div class="container">
-    Footer
-  </div>
+<footer class="footer" data-section-id="{{ section.id }}" data-section-type="footer">
+  {% if section.settings.menu != blank %}
+    {% assign menu = linklists[section.settings.menu] %}
+
+    {% if menu.links.size > 0 %}
+      <div class="container">
+        <div class="row">
+          <div class="col-16">
+            <ul>
+              {% for link in menu.links %}
+                <li>
+                  <a href="{{ link.url }}"{% if link.url contains 'http' %} target="_blank"{% endif %}>
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  {% endif %}
 </footer>
 
 {% schema %}
   {
     "name": "Footer",
-    "settings": []
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "menu",
+        "label": "Menu"
+      }
+    ]
   }
 {% endschema %}

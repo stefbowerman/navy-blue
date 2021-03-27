@@ -254,6 +254,11 @@ export function userAgentBodyClass() {
     classes += ' ua-samsung';
   }
 
+  if(/Safari/.test(ua)) {
+    classes += ' ua-safari';
+  }
+
+
   d.className = classes;
 }
 
@@ -403,7 +408,7 @@ export function isExternal(url) {
 }
 
 export function isTouch() {
-  return ((Modernizr && Modernizr.touchevents) || 'ontouchstart' in window);
+  return ((window.Modernizr && window.Modernizr.touchevents) || 'ontouchstart' in window);
 }
 
 export function random(min = 0, max = 1) {

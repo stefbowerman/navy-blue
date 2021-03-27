@@ -9,10 +9,15 @@
     <meta itemprop="image" content="{{ featured_image | img_url: '600x600' }}">
     <meta itemprop="description" content="{{ product.description | strip_html | escape }}">
 
-    {% render 'product-detail-form',
-               product: product,
-               current_variant: current_variant
-    %}
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">
+          {% render 'product-card',
+                     product: product
+          %}
+        </div>
+      </div>    
+    </div>
   </div>
 </div>
 

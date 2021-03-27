@@ -5,7 +5,6 @@
 {% endif %}
 
 <div class="header-logo">
-  <!-- {% include 'icon-logo' %} -->
-  Logo icon / Image here
+  <img src="{{ 'logo.png' | asset_img_url: '250x'}}" alt="Site Logo" />
   <span class="visually-hidden">{{ shop.name }} logo</span>
 </div>

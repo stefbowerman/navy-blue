@@ -1,0 +1,49 @@
+<div data-section-id="{{ section.id }}" data-section-type="page-videos">
+  <div class="layout-content-wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">
+          {% for block in section.blocks %}
+            <div class="album-card" {{ block.shopify_attributes }}>
+              <h4>{{ block.settings.title }}</h4>
+              <div class="rte">{{ block.settings.description }}</div>
+              {% if block.settings.embed != blank %}
+                <div style="margin-top: 30px;">{{ block.settings.embed }}</div>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Music Page",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "album",
+        "name": "Album",
+        "settings": [
+          {
+            "id": "title",
+            "type": "text",
+            "label": "Title"
+          },
+          {
+            "id": "description",
+            "type": "richtext",
+            "label": "Description"
+          },          
+          {
+            "id": "embed",
+            "type": "textarea",
+            "label": "Embed"
+          }
+        ]        
+      }
+    ]
+  }
+{% endschema %}

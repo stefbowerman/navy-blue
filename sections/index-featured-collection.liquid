@@ -1,0 +1,35 @@
+<div data-section-id="{{ section.id }}" data-section-type="featured-collection">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">
+        {% for product in collections[section.settings.collection].products %}
+          {% render 'product-card',
+                     product: product
+          %}
+        {% endfor %}
+      </div>
+    </div>    
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Featured Collection",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Collection"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Featured Collection",
+        "category": "Product",
+        "settings": {
+          "collection": "frontpage"
+        }
+      }
+    ]
+  }
+{% endschema %}
