@@ -39,10 +39,14 @@
 .layout-content-wrapper {
   padding-top: $layout-vertical-padding-mobile;
   padding-bottom: $layout-vertical-padding-mobile * 0.5;
+
+  @include bp-up(sm) {
+    padding-bottom: $outer-vertical-margin + 6px;
+  }
   
   @include bp-up(lg) {
     padding-top: $layout-vertical-padding;
-    padding-bottom: $layout-vertical-padding * 0.5;
+    // padding-bottom: $outer-vertical-margin; // $layout-vertical-padding * 0.5;
   }
 
   &.flush-top {

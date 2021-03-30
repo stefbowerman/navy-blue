@@ -36,6 +36,7 @@ body.ajax-cart-open {
 
 .ajax-cart__close {
   position: absolute;
+  z-index: 10;
   top: $outer-vertical-margin;
   right: $outer-gutter-mobile - 3px;
   display: inline-block;
@@ -104,14 +105,14 @@ body.ajax-cart-open {
   margin-right: 18px;
 
   img {
-    width: 71px;
+    width: 87px;
     height: auto;
   }
 }
 
 .ajax-cart__item-info {
   flex: 1;
-  padding-top: 5px;
+  padding-top: 11px;
 }
 
 .ajax-cart__item-info-main {
@@ -123,6 +124,10 @@ body.ajax-cart-open {
   h6 {
     margin: 0;
     padding-right: 10px;
+
+    @include bp-down(sm) {
+      font-size: $h5-font-size;
+    }
   }
 }
 
@@ -147,6 +152,7 @@ body.ajax-cart-open {
 .ajax-cart__footer-row {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   text-transform: uppercase;
 }
 

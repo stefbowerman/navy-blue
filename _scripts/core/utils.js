@@ -254,8 +254,12 @@ export function userAgentBodyClass() {
     classes += ' ua-samsung';
   }
 
-  if(/Safari/.test(ua)) {
-    classes += ' ua-safari';
+  if (ua.indexOf('safari') != -1) { 
+    if (ua.indexOf('chrome') > -1) {
+      // Chrome
+    } else {
+      classes += ' ua-safari';
+    }
   }
 
 

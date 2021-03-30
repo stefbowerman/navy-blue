@@ -556,6 +556,8 @@ exports.default = ProductDetailPrice;
 },{"../../core/currency":13,"jquery":36}],5:[function(require,module,exports){
 "use strict";
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
@@ -563,11 +565,17 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault(require("jquery"));
 
-var _swiper = _interopRequireDefault(require("swiper"));
+var _swiper = _interopRequireWildcard(require("swiper"));
+
+var _imagesloaded = _interopRequireDefault(require("imagesloaded"));
 
 var _utils = require("../../core/utils");
 
 var _breakpoints = require("../../core/breakpoints");
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -578,17 +586,21 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var selectors = {
-  background: '[data-zoom-background]',
   overlay: '[data-zoom-overlay]',
   overlayContent: '[data-zoom-overlay-content]',
   close: '[data-zoom-close]',
-  slideshow: '[data-slideshow]'
+  slideshow: '[data-slideshow]',
+  pagination: '[data-pagination]',
+  next: '[data-next]',
+  prev: '[data-prev]'
 };
 var classes = {
   bodyZoomOpen: 'product-zoom-open',
   visible: 'is-visible'
 };
 var $body = (0, _jquery.default)(document.body);
+
+_swiper.default.use([_swiper.Navigation, _swiper.Pagination, _swiper.EffectFade]);
 
 var ProductZoom = /*#__PURE__*/function () {
   function ProductZoom(el) {
@@ -597,11 +609,13 @@ var ProductZoom = /*#__PURE__*/function () {
     _classCallCheck(this, ProductZoom);
 
     this.$el = (0, _jquery.default)(el);
-    this.$background = (0, _jquery.default)(selectors.background, this.$el);
     this.$overlay = (0, _jquery.default)(selectors.overlay, this.$el);
     this.$overlayContent = (0, _jquery.default)(selectors.overlayContent, this.$el);
     this.$slideshow = (0, _jquery.default)(selectors.slideshow, this.$el);
     this.$slides = (0, _jquery.default)('.swiper-slide', this.$slideshow);
+    this.$pagination = (0, _jquery.default)(selectors.pagination, this.$el);
+    this.$next = (0, _jquery.default)(selectors.next, this.$el);
+    this.$prev = (0, _jquery.default)(selectors.prev, this.$el);
     this.stateIsOpen = false;
     this.imagesLoaded = false;
     var mobileSettings = window.innerWidth < (0, _breakpoints.getBreakpointMinWidth)('md');
@@ -613,12 +627,32 @@ var ProductZoom = /*#__PURE__*/function () {
       speed: speed,
       effect: effect,
       simulateTouch: false,
-      watchOverflow: true
+      watchOverflow: true,
+      navigation: {
+        nextEl: this.$next.get(0),
+        prevEl: this.$prev.get(0)
+      },
+      fadeEffect: {
+        crossFade: true
+      },
+      pagination: {
+        el: this.$pagination.get(0),
+        type: 'fraction',
+        renderCustom: function renderCustom(swiper, current, total) {
+          return "".concat(current, "/").concat(total);
+        }
+      }
     });
+    this.$el.addClass("effect-".concat(effect));
     this.$el.on('click', selectors.close, this.onCloseClick.bind(this));
-    this.$el.on('click', 'img', function () {
-      _this.swiper.slideNext();
-    });
+
+    if (!(0, _utils.isTouch)() && !mobileSettings && loop) {
+      this.$slideshow.find('img').on('click', function () {
+        return _this.swiper.slideNext();
+      }).css('cursor', 'e-resize');
+    }
+
+    this.loadImages();
   }
 
   _createClass(ProductZoom, [{
@@ -630,8 +664,6 @@ var ProductZoom = /*#__PURE__*/function () {
       this.stateIsOpen = true;
       this.$el.show();
       setTimeout(function () {
-        _this2.$background.addClass(classes.visible);
-
         _this2.$overlay.addClass(classes.visible);
 
         setTimeout(function () {
@@ -645,7 +677,7 @@ var ProductZoom = /*#__PURE__*/function () {
     value: function hide() {
       if (!this.stateIsOpen) return;
       this.$overlay.removeClass(classes.visible);
-      this.$background.removeClass(classes.visible);
+      $body.removeClass(classes.bodyZoomOpen);
       setTimeout(this.onHidden.bind(this), 550);
     }
   }, {
@@ -653,7 +685,11 @@ var ProductZoom = /*#__PURE__*/function () {
     value: function loadImages() {
       if (this.imagesLoaded) return;
       this.$el.find('img').each(function (i, img) {
-        var $el = (0, _jquery.default)(img);
+        var $el = (0, _jquery.default)(img); // Loaded callback
+
+        (0, _imagesloaded.default)(img, function () {
+          return $el.addClass('is-loaded');
+        });
         $el.attr('srcset', $el.data('srcset'));
         $el.attr('src', $el.data('src'));
         $el.attr({
@@ -666,14 +702,12 @@ var ProductZoom = /*#__PURE__*/function () {
   }, {
     key: "goToImage",
     value: function goToImage(index) {
-      console.log(index);
       this.swiper.slideToLoop(index, 0, false);
     } // Called *right* after the zoom is made visible
 
   }, {
     key: "onShow",
     value: function onShow() {
-      this.loadImages();
       this.swiper.update();
     }
   }, {
@@ -683,9 +717,7 @@ var ProductZoom = /*#__PURE__*/function () {
     key: "onHidden",
     value: function onHidden() {
       this.stateIsOpen = false;
-      $body.removeClass(classes.bodyZoomOpen);
       this.$el.hide();
-      console.log('onHidden!');
     }
   }, {
     key: "onCloseClick",
@@ -700,7 +732,7 @@ var ProductZoom = /*#__PURE__*/function () {
 
 exports.default = ProductZoom;
 
-},{"../../core/breakpoints":11,"../../core/utils":16,"jquery":36,"swiper":131}],6:[function(require,module,exports){
+},{"../../core/breakpoints":11,"../../core/utils":16,"imagesloaded":35,"jquery":36,"swiper":131}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2462,8 +2494,11 @@ function userAgentBodyClass() {
     classes += ' ua-samsung';
   }
 
-  if (/Safari/.test(ua)) {
-    classes += ' ua-safari';
+  if (ua.indexOf('safari') != -1) {
+    if (ua.indexOf('chrome') > -1) {// Chrome
+    } else {
+      classes += ' ua-safari';
+    }
   }
 
   d.className = classes;
@@ -3117,7 +3152,6 @@ var VideoEmbed = /*#__PURE__*/function () {
     this.player = (0, _youtubePlayer.default)(this.$player.get(0), {
       videoId: this.$el.data('id'),
       playerVars: {
-        controls: 0,
         modestBranding: 1,
         rel: 0
       }
@@ -3247,15 +3281,13 @@ var _jquery = _interopRequireDefault(require("jquery"));
 
 var _imagesloaded = _interopRequireDefault(require("imagesloaded"));
 
+var _utils = require("../core/utils");
+
 var _base = _interopRequireDefault(require("./base"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
-
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -3285,41 +3317,44 @@ var SiteBackgroundSection = /*#__PURE__*/function (_BaseSection) {
 
     _classCallCheck(this, SiteBackgroundSection);
 
-    _this = _super.call(this, container, 'site-background'); // this.$frames = $(selectors.frame, this.$container)
-
+    _this = _super.call(this, container, 'site-background');
+    _this.$frames = (0, _jquery.default)(selectors.frame, _this.$container);
     _this.$videos = (0, _jquery.default)('video', _this.$container);
     _this.$images = (0, _jquery.default)('img', _this.$container);
 
-    _this.$images.each(function (i, img) {
-      var $frame = (0, _jquery.default)(img).parent(selectors.frame);
-      (0, _imagesloaded.default)($frame.get(0), function () {
-        $frame.addClass('is-loaded');
-      });
-    }); // this.$images.on('load loaded', this.onFrameContentLoad.bind(this))
+    _this.$frames.each(function (i, frame) {
+      var delay = Math.abs((Math.random() - 0.5) * 1e3 * ((i + 1) * 0.5) + i * 1e3);
+      var $frame = (0, _jquery.default)(frame);
+      var $img = $frame.find('img').first();
+      var $video = $frame.find('video').first();
+      var video = $video.get(0);
 
+      var loadedCallback = function loadedCallback() {
+        setTimeout(function () {
+          return $frame.addClass('is-loaded');
+        }, (0, _utils.clamp)(delay, 500, 3500));
+      };
 
-    _this.$videos.each(function (i, el) {
-      return (0, _jquery.default)(el).one('play playing', _this.onFrameContentLoad.bind(_assertThisInitialized(_this)));
-    }); // @TODO - Check if the video already playing when this runs, might not catch the first event
-    // @TODO - trigger play programatically, add a delay?
-
+      if ($img.length === 1) {
+        (0, _imagesloaded.default)(frame, loadedCallback);
+      } else if ($video.length === 1) {
+        if (video.currentTime > 0 && !video.paused && video.readyState > 2) {
+          loadedCallback();
+        } else {
+          (0, _jquery.default)(video).one('play playing', loadedCallback);
+        }
+      }
+    });
 
     return _this;
   }
-
-  _createClass(SiteBackgroundSection, [{
-    key: "onFrameContentLoad",
-    value: function onFrameContentLoad(e) {
-      (0, _jquery.default)(e.currentTarget).parent(selectors.frame).addClass('is-loaded');
-    }
-  }]);
 
   return SiteBackgroundSection;
 }(_base.default);
 
 exports.default = SiteBackgroundSection;
 
-},{"./base":18,"imagesloaded":35,"jquery":36}],25:[function(require,module,exports){
+},{"../core/utils":16,"./base":18,"imagesloaded":35,"jquery":36}],25:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }

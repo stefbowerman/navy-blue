@@ -10,7 +10,11 @@
   font-size: $font-size-base;
   width: auto;
   cursor: pointer;
-  transition: all 150ms ease-out;
+  transition: {
+    duration: 150ms;
+    timing-function: ease-out;
+    property: color, border-color, background-color;
+  }
 
   @include bp-up(md) {
     padding: 8px 15px 7px;
@@ -54,8 +58,7 @@
   }
 
   @include has-hover {
-    &:hover,
-    &:focus {
+    &:hover {
       background-color: $color-text;
       color: $body-bg;
     }
@@ -64,8 +67,8 @@
 
 .btn--secondary {
   padding: 5px 9px 4px;
-  background-color: $color-text;
-  border-color: $color-text;
+  background-color: $white;
+  border-color: $white;
   color: $body-bg;
 
   @include bp-up(md) {
@@ -73,9 +76,8 @@
   }
 
   @include has-hover {
-    &:hover,
-    &:focus {
-      background-color: $color-text;
+    &:hover {
+      background-color: $white;
     }
   }    
 }

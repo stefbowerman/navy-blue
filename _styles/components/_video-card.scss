@@ -1,8 +1,4 @@
 .video-card {
-  & + & {
-    margin-top: 100px;
-  }
-
   .embed {
     position: relative;
     height: 0;
@@ -23,6 +19,7 @@
   }
 
   .embed__cover {
+    cursor: pointer;
     background-color: $body-bg;
 
     img {
@@ -45,6 +42,14 @@
     }
 
     transition: opacity .5s cubic-bezier(0.14, 0.23, 0.24, 0.84);
+
+    @include has-hover {
+      &:hover {
+        img {
+          opacity: 0.6;
+        }
+      }
+    }
 
     &.is-hidden {
       opacity: 0;

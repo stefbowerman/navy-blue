@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">
           {% for block in section.blocks %}
-            <div class="album-card" {{ block.shopify_attributes }}>
+            <div class="card album-card" {{ block.shopify_attributes }}>
               <h4>{{ block.settings.title }}</h4>
               <div class="rte">{{ block.settings.description }}</div>
               {% if block.settings.embed != blank %}

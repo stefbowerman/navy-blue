@@ -6,10 +6,6 @@
 
 
   &.product-card--sold-out {}
-
-  & + & {
-    margin-top: 100px;
-  }
 }
 
 .product-card__contents {
@@ -24,6 +20,10 @@
   }
 }
 
+.product-card__inner-contents {
+  // See transitions
+}
+
 .product-card__gallery {
   display: flex;
   flex-wrap: wrap;
@@ -32,6 +32,7 @@
 .product-card__gallery-image {
   display: inline-block;
   width: 40%;
+  max-width: 175px;
   margin: 0 $card-spacing $card-spacing 0;
   cursor: pointer;
 
@@ -77,6 +78,6 @@
 
 .product-card__form {
   .product-detail-price {
-    margin-bottom: $card-spacing;
+    margin-bottom: $spacer;
   }
 }

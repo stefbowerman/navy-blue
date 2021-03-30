@@ -19,6 +19,13 @@
                   Checkout
                 </button>
               </div>
+              {% if section.settings.cart_message != blank %}
+                <div class="ajax-cart__footer-row">
+                  <div style="width: 100%; text-align: center; font-style: italic;">
+                    {{ section.settings.cart_message }}
+                  </div>
+                </div>
+              {% endif %}
               <div class="ajax-cart__footer-row">
                 <div style="width: 100%; text-align: center">
                   <a href="#" data-close>Back to Site</a>
@@ -45,6 +52,12 @@
   {
     "name": "Ajax Cart",
     "settings": [
+      {
+        "id": "cart_message",
+        "type": "textarea",
+        "label": "Cart Message",
+        "info": "Optional message to display at the bottom of the cart"
+      },
       {
         "id": "empty_text",
         "type": "richtext",

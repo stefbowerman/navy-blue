@@ -38,7 +38,11 @@
   }
 
   li {
-    margin-bottom: 4px;
+    margin-bottom: 9px;
+
+    @include bp-up(lg) {
+      margin-bottom: 4px;
+    }
   }
 }
 
@@ -50,6 +54,7 @@
 
   @include bp-up(lg) {
     right: $outer-gutter;
+    opacity: 0.85;
   }
 
   @include bp-up(xl) {

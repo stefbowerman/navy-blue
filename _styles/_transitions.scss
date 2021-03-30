@@ -1,11 +1,27 @@
 .view-container,
 .header {
-  transition: opacity 400ms cubic-bezier(0.53, 0.13, 0.47, 0.85) 200ms;
+  transition: opacity 400ms cubic-bezier(0.53, 0.13, 0.47, 0.85) 100ms;
 
   body.ajax-cart-open & {
     opacity: 0;
     transition-timing-function: cubic-bezier(0.32, 0.42, 0.01, 0.85);
     transition-delay: 0s;
+  }
+}
+
+body.product-zoom-open .header {
+  opacity: 0;
+  transition-timing-function: cubic-bezier(0.32, 0.42, 0.01, 0.85);
+  transition-delay: 0s;
+}
+
+.product-card__inner-contents {
+  opacity: 1;
+  transition: opacity 400ms cubic-bezier(0.53, 0.13, 0.47, 0.85) 100ms;
+
+  body.product-zoom-open & {
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.32, 0.42, 0.01, 0.85) 0s;
   }
 }
 

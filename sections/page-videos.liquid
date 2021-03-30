@@ -4,7 +4,7 @@
       <div class="row">
         <div class="col-sm-20 col-md-15 col-lg-12 col-xxl-10">      
           {% for block in section.blocks %}
-            <div class="video-card" {{ block.shopify_attributes }}>
+            <div class="card video-card" {{ block.shopify_attributes }}>
               {% if block.settings.video_url != blank %}
                 <div class="embed" data-embed data-id="{{ block.settings.video_url.id }}">
                   <div class="embed__player" data-embed-player></div>

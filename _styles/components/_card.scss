@@ -1,0 +1,10 @@
+.card {
+  & + & {
+    margin-top: 60px;
+    margin-top: 35vh;
+
+    @include bp-up(lg) {
+      margin-top: 100px;  
+    }
+  }
+}

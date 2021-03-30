@@ -25,14 +25,14 @@
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: $form-group-bottom-margin;
 
   label {
     font-size: $font-size-xs;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     display: inline-block;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 }
 

@@ -32,7 +32,6 @@ class VideoEmbed {
     this.player = YouTubePlayer(this.$player.get(0), {
       videoId: this.$el.data('id'),
       playerVars: {
-        controls: 0,
         modestBranding: 1,
         rel: 0
       }
