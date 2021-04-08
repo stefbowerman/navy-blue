@@ -66,7 +66,6 @@ const setViewportHeightProperty = () => {
     },
     onViewChangeStart: (url, newView) => {
       // console.log('onViewChangeStart')
-      header.updateNavLinks(url)
     },
     onViewTransitionOutDone: (url, deferred) => {
       // console.log('onViewTransitionOutDone')

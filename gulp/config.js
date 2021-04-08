@@ -23,6 +23,12 @@ module.exports = {
     eslint: {
       filePattern: ['./_scripts/**/*.js'],
       extensions: ['js']
+    },
+    notifications: {
+      filePattern: ['./_notifications/**/*.scss'],
+      files: ['notifications.scss'],
+      src: './_notifications',
+      dest: './_notifications'
     }
   }
 };

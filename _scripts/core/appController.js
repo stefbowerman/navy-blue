@@ -97,6 +97,10 @@ export default class AppController {
       this.doRoute('/challenge');
     });
 
+    this.router.on('/a/downloads/*', ({ url }) => {
+      this.doRoute(`/${url}`, 'downloads');
+    })
+
     this.router.notFound((params) => {
       // called when there is path specified but
       // there is no route matching
@@ -254,7 +258,6 @@ export default class AppController {
   }
 
   navigate(url) {
-    console.log('navigate - ' + url)
     this.router.navigate(url);
 
     return this;

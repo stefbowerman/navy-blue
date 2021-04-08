@@ -31,13 +31,18 @@
 
 .product-card__gallery-image {
   display: inline-block;
-  width: 40%;
-  max-width: 175px;
+  width: 45%;
+  max-width: 200px;
   margin: 0 $card-spacing $card-spacing 0;
   cursor: pointer;
 
   @include bp-up(md) {
-    width: 175px;
+    width: 200px;
+    max-width: none;
+  }
+
+  @include bp-up(xl) {
+    width: 225px;
   }
 
   img {

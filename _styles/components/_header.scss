@@ -47,10 +47,24 @@
 }
 
 .header-logo {
-  width: 100px;
-  position: fixed;
-  right: $outer-gutter-mobile;
-  bottom: $outer-vertical-margin;
+  width: 89px;
+  transition: opacity 0.45s cubic-bezier(0.53, 0.13, 0.47, 0.85);
+
+  @include bp-down(sm) {
+    .scroll-triggered & {
+      pointer-events: none;
+      opacity: 0;
+      transition-duration: 0.65s;
+      transition-timing-function: cubic-bezier(0.32, 0.42, 0.01, 0.85);
+    }
+  }
+
+  @include bp-up(md) {
+    width: 100px;
+    position: fixed;
+    right: $outer-gutter-mobile;
+    bottom: $outer-vertical-margin;    
+  }
 
   @include bp-up(lg) {
     right: $outer-gutter;

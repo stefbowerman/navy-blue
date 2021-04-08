@@ -1,0 +1,45 @@
+#digital-downloads-proxy {
+  @extend .layout-content-wrapper;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  .sdd-download.sdd-download {
+    @extend .outer-container;
+    padding-top: 0;
+    padding-bottom: 0;
+    max-width: 800px;
+    margin-left: 0;
+    text-align: left;
+  }  
+
+  .sdd-download-image {
+    width: 45%;
+    max-width: 200px;
+    max-height: none;
+
+    @include bp-up(md) {
+      width: 200px;
+      max-width: none;
+    }
+
+    @include bp-up(xl) {
+      width: 225px;
+    }    
+  }
+
+  .sdd-download-product {
+    @extend .h3;
+  }
+
+  .sdd-download-file {
+    font-size: inherit;
+    color: inherit;
+    margin-bottom: $spacer;
+  }
+
+  .sdd-download-button {
+    @extend .btn;
+    line-height: inherit;
+  }
+}

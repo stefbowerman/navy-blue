@@ -1384,6 +1384,11 @@ var AppController = /*#__PURE__*/function () {
     this.router.on('/challenge', function () {
       _this.doRoute('/challenge');
     });
+    this.router.on('/a/downloads/*', function (_ref8) {
+      var url = _ref8.url;
+
+      _this.doRoute("/".concat(url), 'downloads');
+    });
     this.router.notFound(function (params) {
       // called when there is path specified but
       // there is no route matching
@@ -1538,7 +1543,6 @@ var AppController = /*#__PURE__*/function () {
   }, {
     key: "navigate",
     value: function navigate(url) {
-      console.log('navigate - ' + url);
       this.router.navigate(url);
       return this;
     }
@@ -3012,7 +3016,11 @@ exports.default = void 0;
 
 var _jquery = _interopRequireDefault(require("jquery"));
 
+var _throttleDebounce = require("throttle-debounce");
+
 var _base = _interopRequireDefault(require("./base"));
+
+var _utils = require("../core/utils");
 
 var _ajaxCart = require("../components/ajaxCart");
 
@@ -3043,8 +3051,10 @@ var selectors = {
   cartToggle: '[data-ajax-cart-toggle]'
 };
 var classes = {
-  hasItems: 'has-items'
+  hasItems: 'has-items',
+  scrollTriggered: 'scroll-triggered'
 };
+var $window = (0, _jquery.default)(window);
 
 var HeaderSection = /*#__PURE__*/function (_BaseSection) {
   _inherits(HeaderSection, _BaseSection);
@@ -3058,12 +3068,34 @@ var HeaderSection = /*#__PURE__*/function (_BaseSection) {
 
     _this = _super.call(this, container, 'header');
     _this.$cartCount = (0, _jquery.default)(selectors.cartCount, _this.$container);
-    _this.$cartToggle = (0, _jquery.default)(selectors.cartToggle, _this.$container);
-    (0, _jquery.default)(window).on(_ajaxCart.events.RENDER, _this.onAJAXCartRender.bind(_assertThisInitialized(_this)));
+    _this.$cartToggle = (0, _jquery.default)(selectors.cartToggle, _this.$container); // Cache these values because we use them in the scroll handler
+
+    _this.prevY = 0;
+    _this.dirChangeY = 0; // Scrolltop value when the user changes scroll direction
+
+    _this.scrollDirection = null; // up / down
+
+    _this.scrollTriggerDistance = 40;
+    _this.scrollTriggered = false;
+    _this.callbacks = {
+      onAJAXCartRender: _this.onAJAXCartRender.bind(_assertThisInitialized(_this)),
+      onScroll: (0, _throttleDebounce.throttle)(100, _this.onScroll.bind(_assertThisInitialized(_this)))
+    };
+    $window.on(_ajaxCart.events.RENDER, _this.callbacks.onAJAXCartRender);
+    $window.on('scroll', _this.callbacks.onScroll);
+
+    _this.onScroll();
+
     return _this;
   }
 
   _createClass(HeaderSection, [{
+    key: "onUnload",
+    value: function onUnload() {
+      $window.off(_ajaxCart.events.RENDER, this.callbacks.onAJAXCartRender);
+      $window.off('scroll', this.callbacks.onScroll);
+    }
+  }, {
     key: "onAJAXCartRender",
     value: function onAJAXCartRender(_ref) {
       var cart = _ref.cart;
@@ -3071,9 +3103,41 @@ var HeaderSection = /*#__PURE__*/function (_BaseSection) {
       this.$cartToggle.toggleClass(classes.hasItems, cart.item_count > 0);
     }
   }, {
-    key: "updateNavLinks",
-    value: function updateNavLinks(url) {
-      console.log('update for ', url);
+    key: "onScroll",
+    value: function onScroll() {
+      var _this2 = this;
+
+      var y = (0, _utils.getScrollY)();
+      var direction = y >= this.prevY ? 'down' : 'up';
+      var scrollTriggered = false;
+
+      if (direction !== this.scrollDirection) {
+        this.dirChangeY = y;
+      }
+
+      if (direction === 'down' && y > this.scrollTriggerDistance) {
+        //  going down and scrolled past header natural height
+        scrollTriggered = true;
+      } else if (direction === 'up') {
+        scrollTriggered = this.dirChangeY - y <= 50; //  going up and scrolled up 40px from last time we changed scroll direction
+      } // For situations where we toggle content visibility and cause page jumps
+      // Or we scroll past the top on mobile
+
+
+      if (y <= 0) {
+        scrollTriggered = false;
+      }
+
+      if (scrollTriggered !== this.scrollTriggered) {
+        window.requestAnimationFrame(function () {
+          _this2.$container.toggleClass(classes.scrollTriggered, scrollTriggered);
+
+          _this2.scrollTriggered = scrollTriggered;
+        });
+      }
+
+      this.prevY = y;
+      this.scrollDirection = direction;
     }
   }]);
 
@@ -3082,7 +3146,7 @@ var HeaderSection = /*#__PURE__*/function (_BaseSection) {
 
 exports.default = HeaderSection;
 
-},{"../components/ajaxCart":1,"./base":18,"jquery":36}],22:[function(require,module,exports){
+},{"../components/ajaxCart":1,"../core/utils":16,"./base":18,"jquery":36,"throttle-debounce":132}],22:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -3428,9 +3492,7 @@ var setViewportHeightProperty = function setViewportHeightProperty() {
     },
     onRouteStart: function onRouteStart(url) {// console.log('onRouteStart');
     },
-    onViewChangeStart: function onViewChangeStart(url, newView) {
-      // console.log('onViewChangeStart')
-      header.updateNavLinks(url);
+    onViewChangeStart: function onViewChangeStart(url, newView) {// console.log('onViewChangeStart')
     },
     onViewTransitionOutDone: function onViewTransitionOutDone(url, deferred) {
       // console.log('onViewTransitionOutDone')

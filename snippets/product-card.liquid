@@ -54,10 +54,9 @@
         {% if product.images.size > 0 %}
           <div class="product-card__gallery" data-gallery>
             {% for image in product.images %}
-              {% comment %} @TODO - do padding-bottom here to prevent layout shift {% endcomment %}
               <div class="product-card__gallery-image" data-gallery-image>
                 <img
-                  src="{{ image | img_url: '400x' }}"
+                  src="{{ image | img_url: '500x' }}"
                   alt="{{ image.alt | escape }}"
                   height="{{ image.height }}"
                   width="{{ image.width }}"
@@ -243,7 +242,7 @@
                   1/{{ product.images.size }}
                 </div>
               {% endif %}
-              <div>{{ product.title }}</div>
+              <h5>{{ product.title }}</h5>
             </div>
 
             {% if product.images.size > 1 %}
